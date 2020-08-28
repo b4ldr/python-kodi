@@ -14,10 +14,10 @@ class KodiCtl:
         self.hostname = hostname
         self.port = port
         self.tls = tls
-        self.__username = username
-        self.__password = password
-        self.__movies = None
-        self.__songs = None
+        self._username = username
+        self._password = password
+        self._movies = None
+        self._songs = None
         self.session = Session()
         self.log = getLogger(__name__)
         self._subtitles = None
@@ -37,23 +37,23 @@ class KodiCtl:
     @property
     def username(self):
         """username getter"""
-        return self.__username
+        return self._username
 
     @username.setter
     def username(self, username):
         """username setter"""
-        self.__username = username
+        self._username = username
         self.session.auth = (self.username, self.password)
 
     @property
     def password(self):
         """password getter"""
-        return self.__password
+        return self._password
 
     @password.setter
     def password(self, password):
         """password setter"""
-        self.__password = password
+        self._password = password
         self.session.auth = (self.username, self.password)
 
     def _post(self, method, params=None, api_id=1):
@@ -141,22 +141,22 @@ class KodiCtl:
     @property
     def movies(self):
         """List all movies in kodi"""
-        if self.__movies is None:
+        if self._movies is None:
             method = 'VideoLibrary.GetMovies'
             params = {'properties': []}
             results = self._post(method, params)
-            self.__movies = Movies(results.get('movies', {}))
-        return self.__movies
+            self._movies = Movies(results.get('movies', {}))
+        return self._movies
 
     @property
     def songs(self):
         """List all songs"""
-        if self.__songs is None:
+        if self._songs is None:
             method = 'AudioLibrary.GetSongs'
             params = {'properties': ['artist', 'duration', 'album', 'track']}
             result = self._post(method, params)
-            self.__songs = Songs(result.get('songs', {}))
-        return self.__songs
+            self._songs = Songs(result.get('songs', {}))
+        return self._songs
 
     def add_to_playlist(self, media):
         """add a media item to the playlist"""
