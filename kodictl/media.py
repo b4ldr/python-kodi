@@ -4,6 +4,7 @@
 class BaseMedia:
     """A base media class"""
     media = 'base'
+    id_str = '{}id'.format(media)
 
     def __init__(self, raw):
         # TODO: use __getitem__

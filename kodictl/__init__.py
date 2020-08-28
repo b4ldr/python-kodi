@@ -2,8 +2,8 @@
 
 from logging import getLogger
 
-from requests import Session
 
+from requests import Session
 from kodictl.media import Movies, Songs
 
 
@@ -20,7 +20,9 @@ class KodiCtl:
         self.__songs = None
         self.session = Session()
         self.log = getLogger(__name__)
-        self._subtitles = 'Unknown'
+        self._subtitles = None
+        self._pause = None
+        self._volume = None
 
     @property
     def uri(self):
@@ -85,6 +87,51 @@ class KodiCtl:
             self._post(method, params)
 
     @property
+    def pause(self):
+        return self._pause
+
+    @pause.setter
+    def pause(self, value):
+        if not isinstance(value, bool):
+            raise ValueError('argument must be boolean')
+        if value != self._pause:
+            self._pause = value
+            method = 'Player.PlayPause'
+            params = {'playerid': 1, 'play': not self._pause}
+            self._post(method, params)
+
+    @property
+    def volume(self):
+        # TODO: maybe get the current volume
+        return self._volume
+
+    @volume.setter
+    def volume(self, value):
+        if not isinstance(value, int):
+            raise ValueError('argument must be int')
+        if value != self._volume:
+            self._volume = value
+            method = 'Application.SetVolume'
+            params = {'volume': self._volume}
+            self._post(method, params)
+
+    @property
+    def active_window(self):
+        # TODO: maybe get the current volume
+        return self._active_window
+
+    @active_window.setter
+    def active_window(self, value):
+        # TODO: add valid gui's
+        if not isinstance(value, str):
+            raise ValueError('argument must be string')
+        if value != self._active_window:
+            self._active_window = value
+            method = 'GUI.ActiveWindow'
+            params = {'window': 'videos', 'parameters': [self._active_window]}
+            self._post(method, params)
+
+    @property
     def playing(self):
         """ check if kodi is currently playing, required for some functions"""
         method = 'Player.GetActivePlayers'
@@ -110,3 +157,22 @@ class KodiCtl:
             result = self._post(method, params)
             self.__songs = Songs(result.get('songs', {}))
         return self.__songs
+
+    def add_to_playlist(self, media):
+        """add a media item to the playlist"""
+        method = 'Playlist.Add'
+        params = {'playlistid': 1, 'item': {media.id_str: media.id}}
+        self._post(method, params)
+
+    def play(self):
+        """play the playlist"""
+        method = 'player.open'
+        params = {'item': {'playlistid': 1}}
+        self._post(method, params)
+
+    def stop(self):
+        """stop any playing movie"""
+        method = 'Player.Stop'
+        params = {'playerid': 1}
+        self._post(method, params)
+
