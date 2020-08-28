@@ -176,3 +176,11 @@ class KodiCtl:
         params = {'playerid': 1}
         self._post(method, params)
 
+    def library(self, action, showdialogs=True):
+        """Clean the library"""
+        actions = ['clean', 'scan']
+        if action not in actions:
+            raise ValueError('action must be one of {}'.format(', '.join(actions)))
+        method = 'VideoLibrary.{}'.format(action.capitalize())
+        params = {'showdialogs': showdialogs}
+        self._post(method, params)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""script to test lib functionality"""
 import logging
 
 from argparse import ArgumentParser
@@ -14,6 +15,8 @@ def get_args():
     parser.add_argument('-v', '--verbose', action='count')
     parser.add_argument('-M', '--list-movies', action='store_true')
     parser.add_argument('-S', '--list-songs', action='store_true')
+    parser.add_argument('-C', '--clean', action='store_true')
+    parser.add_argument('-s', '--scan', action='store_true')
     parser.add_argument('-V', '--volume', type=int)
     parser.add_argument('--enable-subtitles', action='store_true')
     parser.add_argument('--disable-subtitles', action='store_true')
@@ -36,6 +39,10 @@ def main():
     args = get_args()
     logging.basicConfig(level=get_log_level(args.verbose))
     kctl = KodiCtl(args.host, args.port)
+    if args.clean:
+        kctl.library('clean')
+    if args.scan:
+        kctl.library('scan')
     if args.list_movies:
         for movie in kctl.movies:
             print(movie)
