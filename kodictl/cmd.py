@@ -21,7 +21,8 @@ def get_args():
     parser.add_argument('-A', '--list-addons', action='store_true')
     parser.add_argument('--clean', action='store_true')
     parser.add_argument('--scan', action='store_true')
-    parser.add_argument('-V', '--volume', type=int)
+    parser.add_argument('--volume', action='store_true')
+    parser.add_argument('-V', '--set-volume', type=int)
     parser.add_argument('-R', '--random', action='store_true')
     parser.add_argument('--enable-subtitles', action='store_true')
     parser.add_argument('--disable-subtitles', action='store_true')
@@ -67,8 +68,8 @@ def main():
         kctl.subtitles = True
     if args.disable_subtitles:
         kctl.subtitles = False
-    if args.volume:
-        kctl.volume = args.volume
+    if args.set_volume:
+        kctl.set_volume = args.volume
     if args.pause:
         kctl.pause = True
     if args.unpause:
@@ -77,6 +78,8 @@ def main():
         kctl.play()
     if args.stop:
         kctl.stop()
+    if args.volume:
+        print(kctl.volume)
     if args.movie_search:
         for item in kctl.movies.search(args.movie_search):
             print(item)

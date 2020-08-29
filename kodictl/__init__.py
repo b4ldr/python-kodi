@@ -111,7 +111,7 @@ class KodiCtl:
             method = 'Application.GetProperties'
             params = {'properties': ['volume']}
             result = self._post(method, params)
-            self._volume = result.ger('volume')
+            self._volume = result.get('volume')
         return self._volume
 
     @volume.setter
