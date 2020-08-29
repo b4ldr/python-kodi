@@ -4,7 +4,7 @@ from logging import getLogger
 
 
 from requests import Session
-from kodictl.media import Movies, Songs
+from kodictl.media import Addons, Movies, Songs, TVShows
 
 
 class KodiCtl:
@@ -18,6 +18,9 @@ class KodiCtl:
         self._password = password
         self._movies = None
         self._songs = None
+        self._tvshows = None
+        self._addons = None
+        self._plugins = None
         self.session = Session()
         self.log = getLogger(__name__)
         self._subtitles = None
@@ -62,6 +65,7 @@ class KodiCtl:
         jsonrpc = '{}/{}'.format(self.uri, 'jsonrpc')
         if params:
             payload['params'] = params
+        self.log.debug('sending: %s', params)
         try:
             response = self.session.post(jsonrpc, json=payload)
             self.log.debug(response.text)
@@ -157,6 +161,25 @@ class KodiCtl:
             result = self._post(method, params)
             self._songs = Songs(result.get('songs', {}))
         return self._songs
+
+    @property
+    def tvshows(self):
+        """List all tvshows in kodi"""
+        if self._tvshows is None:
+            method = 'VideoLibrary.GetTVShows'
+            params = {'properties': []}
+            results = self._post(method, params)
+            self._tvshows = TVShows(results.get('tvshows', {}))
+        return self._tvshows
+
+    @property
+    def addons(self):
+        """List all songs"""
+        if self._addons is None:
+            method = 'Addons.GetAddons'
+            results = self._post(method)
+            self._addons = Addons(results.get('addons', {}))
+        return self._addons
 
     def add_to_playlist(self, media):
         """add a media item to the playlist"""
