@@ -28,6 +28,8 @@ def get_args():
     parser.add_argument('--disable-subtitles', action='store_true')
     parser.add_argument('--pause', action='store_true')
     parser.add_argument('--unpause', action='store_true')
+    parser.add_argument('--mute', action='store_true')
+    parser.add_argument('--unmute', action='store_true')
     parser.add_argument('--movie-search')
     parser.add_argument('--music-search')
     parser.add_argument('--tv-search')
@@ -74,6 +76,12 @@ def main():
         kctl.pause = True
     if args.unpause:
         kctl.pause = False
+    if args.mute:
+        print(kctl.muted)
+        kctl.muted = True
+    if args.unmute:
+        print(kctl.muted)
+        kctl.muted = False
     if args.play:
         kctl.play()
     if args.stop:

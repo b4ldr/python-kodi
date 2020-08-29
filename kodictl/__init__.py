@@ -26,6 +26,7 @@ class KodiCtl:
         self._subtitles = None
         self._pause = None
         self._volume = None
+        self._muted = None
 
     @property
     def uri(self):
@@ -102,6 +103,25 @@ class KodiCtl:
             self._pause = value
             method = 'Player.PlayPause'
             params = {'playerid': 1, 'play': not self._pause}
+            self._post(method, params)
+
+    @property
+    def muted(self):
+        if self._muted is None:
+            method = 'Application.GetProperties'
+            params = {'properties': ['muted']}
+            result = self._post(method, params)
+            self._muted = result.get('muted')
+        return self._muted
+
+    @muted.setter
+    def muted(self, value):
+        if not isinstance(value, bool):
+            raise ValueError('argument must be bool')
+        if value != self._muted:
+            self._muted = value
+            method = 'Application.SetMute'
+            params = {'mute': self._muted}
             self._post(method, params)
 
     @property
