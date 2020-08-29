@@ -107,12 +107,18 @@ class KodiCtl:
     @property
     def volume(self):
         # TODO: maybe get the current volume
+        if self._volume is None:
+            method = 'Application.GetProperties'
+            params = {'properties': ['volume']}
+            result = self._post(method, params)
+            self._volume = result.ger('volume')
         return self._volume
 
     @volume.setter
     def volume(self, value):
         if not isinstance(value, int):
             raise ValueError('argument must be int')
+        value = 100 if value > 100 else max(0, value)
         if value != self._volume:
             self._volume = value
             method = 'Application.SetVolume'
