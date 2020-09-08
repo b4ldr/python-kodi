@@ -33,6 +33,7 @@ def get_args():
     parser.add_argument('--movie-search')
     parser.add_argument('--music-search')
     parser.add_argument('--tv-search')
+    parser.add_argument('--skip', type=int)
     return parser.parse_args()
 
 
@@ -95,6 +96,8 @@ def main():
     if args.tv_search:
         for item in kctl.tvshows.search(args.tv_search):
             print(item)
+    if args.skip:
+        kctl.skip(args.skip)
 
 
 if __name__ == '__main__':

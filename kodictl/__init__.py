@@ -233,3 +233,9 @@ class KodiCtl:
         method = 'VideoLibrary.{}'.format(action.capitalize())
         params = {'showdialogs': showdialogs}
         self._post(method, params)
+
+    def skip(self, seconds):
+        """skip forward a number of seconds"""
+        method = 'Player.Seek'
+        params = {'value': seconds, 'playerid': 1}
+        self._post(method, params)
